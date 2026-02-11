@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/hooks/useAuth";
 import { categories } from "@/data/products";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { totalItems, setIsOpen } = useCart();
+  const { user, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-card shadow-sm">
@@ -72,9 +74,20 @@ const Header = () => {
               </Badge>
             )}
           </button>
-          <Link to="/account" className="p-2 rounded-lg hover:bg-muted transition-colors hidden sm:block">
-            <User size={22} className="text-foreground" />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-1">
+              <Link to="/account" className="p-2 rounded-lg hover:bg-muted transition-colors hidden sm:block">
+                <User size={22} className="text-foreground" />
+              </Link>
+              <button onClick={signOut} className="p-2 rounded-lg hover:bg-muted transition-colors hidden sm:block" title="Sign out">
+                <LogOut size={20} className="text-muted-foreground" />
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth">
+              <Button variant="outline" size="sm" className="hidden sm:flex">Sign In</Button>
+            </Link>
+          )}
         </div>
       </div>
 
